@@ -65,9 +65,10 @@ Also there is no limit of params to send to the logs, just like the ol' console.
       'This is a countdown for {timeout} seconds',
       5,1000
     );
-  
-  //Single in-line log
-  logger.progress(['progress is: ',counter]);
+
+
+    //Single in-line log
+    logger.progress(['progress is: ',counter]);
 
 The **countdown** is a single function that will execute untill the intervals are done, and when finished it will fire the callback
 
