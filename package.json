@@ -1,0 +1,32 @@
+{
+  "name": "niceLogger",
+  "version": "0.32.6e",
+  "description": "A colored logger for node.js",
+  "main": "bin/nicelogger.js",
+  "scripts": {
+    "test": "node test/nicelogger.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ZeroDragon/niceLogger"
+  },
+  "keywords": [
+    "colors",
+    "nodejs",
+    "console"
+  ],
+  "author": "ZeroDragon <npm@zerothedragon.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ZeroDragon/niceLogger/issues"
+  },
+  "homepage": "https://github.com/ZeroDragon/niceLogger",
+  "dependencies": {
+    "consolecolors": "0.0.1"
+  },
+  "devDependencies": {
+    "grunt": "~0.4.5",
+    "grunt-contrib-watch": "~0.6.1",
+    "grunt-contrib-coffee": "~0.11.0"
+  }
+}
