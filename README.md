@@ -1,10 +1,12 @@
 Nice Logger
 =========================
 The nicelogger module will add some fancy options to the regular console.log in node.js  
+Inspired by the [winston logger](https://github.com/flatiron/winston), this is a very much
+reduced version made from scratch.
 
 ##Instalation
 
-  npm install niceLogger
+    npm install nicelogger
 
 A config file is required to load information on nicelogger. Here is an example:
 
@@ -37,7 +39,7 @@ Nicelogger will load the app name and version from the `package.json`.
 First require nice logger and don't forget the config file
 
     config = require('./config.json');
-    logger = require('niceLogger').config(config.logger);
+    logger = require('nicelogger').config(config.logger);
 
 Now you can use all the features that nice logger has:
 
@@ -105,4 +107,5 @@ or
 
 
 ##Changelog
+0.32.06f - Name changed and fixing typos on readme
 0.32.06e - Release to github and npm repo
