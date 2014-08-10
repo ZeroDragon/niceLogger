@@ -1,6 +1,6 @@
 {
   "name": "nicelogger",
-  "version": "0.32.6f",
+  "version": "0.32.06g",
   "description": "A colored logger for node.js",
   "main": "bin/nicelogger.js",
   "scripts": {
