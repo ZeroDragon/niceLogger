@@ -43,7 +43,7 @@ var progress = function(){
   var dots = new Array(i+1).join('.');
   count++;
   if(count<100){
-    logger.progress(['This process is: ',(count+'%').red+' done',dots]);
+    logger.progress(['This process is: ',(count+'%').red,' done',dots]);
     timer = setTimeout(function(){
       progress();
     },50);
