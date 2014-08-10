@@ -1,5 +1,5 @@
 {
-  "name": "niceLogger",
+  "name": "nicelogger",
   "version": "0.32.6e",
   "description": "A colored logger for node.js",
   "main": "bin/nicelogger.js",
