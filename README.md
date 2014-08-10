@@ -107,5 +107,5 @@ or
 
 
 ##Changelog
-0.32.06f - Name changed and fixing typos on readme
+0.32.06f - Name changed and fixing typos on readme  
 0.32.06e - Release to github and npm repo
