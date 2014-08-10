@@ -82,13 +82,13 @@ _toString = function(data) {
   return retval.join(joiner);
 };
 
-exports.config = function(config) {
+exports.config = function(config, path) {
   var k, v;
   for (k in config) {
     v = config[k];
     logger[k] = v;
   }
-  pkg = require(logger.appInfo);
+  pkg = require(path + '/' + logger.appInfo);
   return exports;
 };
 

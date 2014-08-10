@@ -1,6 +1,6 @@
 //The requiring part
 config = require('./config.json');
-logger = require('../bin/nicelogger.js').config(config.logger);
+logger = require('../bin/nicelogger.js').config(config.logger,__dirname+'/..');
 
 //The logger functions
 logger.welcome();

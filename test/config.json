@@ -1,6 +1,6 @@
 {
   "logger" : {
-    "appInfo" : "../package.json",
+    "appInfo" : "package.json",
     "date" : true,
     "time" : true,
     "machineName" : false,

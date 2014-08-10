@@ -49,9 +49,9 @@ _toString = (data)->
   joiner = if logger.separatedInfo then "\n" else ' '
   return retval.join joiner
 
-exports.config = (config)->
+exports.config = (config,path)->
   logger[k] = v for k, v of config
-  pkg = require logger.appInfo
+  pkg = require path+'/'+logger.appInfo
   return exports
 
 exports.welcome = ()->
