@@ -107,6 +107,7 @@ or
 
 
 ##Changelog
+0.32.07a - Titleize now mimics the whole RoR functionality and allows changes to the prototype
 0.32.06g - Added a required path parameter to the config function  
 0.32.06f - Name changed and fixing typos on readme  
 0.32.06e - Release to github and npm repo

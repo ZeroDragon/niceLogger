@@ -4,8 +4,11 @@ pkg = false
 os = require 'os'
 logger  = {}
 Object.defineProperty String.prototype, 'titleize',
+  configurable : true
   get : ()->
-    words = @.split ' '; array = []
+    words = @.match(/([A-Z]?[^A-Z]*)/g).slice(0,-1).join ' '
+    words = words.split /\s|_|-/
+    array = []
     for word in words
       array.push word.charAt(0).toUpperCase()+word.toLowerCase().slice(1)
     return array.join ' '

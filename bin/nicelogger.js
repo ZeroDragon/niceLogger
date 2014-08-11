@@ -10,9 +10,11 @@ os = require('os');
 logger = {};
 
 Object.defineProperty(String.prototype, 'titleize', {
+  configurable: true,
   get: function() {
     var array, word, words, _i, _len;
-    words = this.split(' ');
+    words = this.match(/([A-Z]?[^A-Z]*)/g).slice(0, -1).join(' ');
+    words = words.split(/\s|_|-/);
     array = [];
     for (_i = 0, _len = words.length; _i < _len; _i++) {
       word = words[_i];
