@@ -62,11 +62,20 @@ exports.welcome = ()->
   msg = []
   msg.push ' Welcome to: '.green + pkg.name.titleize.magenta
   msg.push ' Version: '.green + pkg.version.yellow
-  msg.push ' Author: '.green + pkg.author.red
-  boxSize = msg.reduce (a,b)->
+  if typeof pkg.author is 'string'
+    author = pkg.author
+  else
+    author = pkg.author
+      .replace /[^a-zA-Z0-9|@]/gi,' '
+      .replace /name|email|/gi,''
+      .replace /\s+/gi,' '
+      .trim()
+  msg.push ' Author: '.green + author.red
+  biggerItem = msg.reduce (a,b)->
     a = a.replace(/\u001b\[[0-9]+m/gi,'') if typeof a is 'string'
     b = b.replace(/\u001b\[[0-9]+m/gi,'') if typeof b is 'string'
-    return if a.length > b.length then a.length else b.length
+    return if a.length > b.length then a else b
+  boxSize = biggerItem.length
   boxStr+="#" for i in [0..boxSize]
   msg.unshift boxStr.blue
   msg.push boxStr.blue

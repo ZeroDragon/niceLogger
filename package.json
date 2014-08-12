@@ -1,6 +1,6 @@
 {
   "name": "nicelogger",
-  "version": "0.32.07a",
+  "version": "0.33.02a",
   "description": "A colored logger for node.js",
   "main": "bin/nicelogger.js",
   "scripts": {
@@ -22,7 +22,7 @@
   },
   "homepage": "https://github.com/ZeroDragon/niceLogger",
   "dependencies": {
-    "consolecolors": "0.0.1"
+    "consolecolors": "0.x.x"
   },
   "devDependencies": {
     "grunt": "~0.4.5",

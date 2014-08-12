@@ -95,13 +95,18 @@ exports.config = function(config, path) {
 };
 
 exports.welcome = function() {
-  var boxSize, boxStr, i, msg, _i;
+  var author, biggerItem, boxSize, boxStr, i, msg, _i;
   boxStr = '';
   msg = [];
   msg.push(' Welcome to: '.green + pkg.name.titleize.magenta);
   msg.push(' Version: '.green + pkg.version.yellow);
-  msg.push(' Author: '.green + pkg.author.red);
-  boxSize = msg.reduce(function(a, b) {
+  if (typeof pkg.author === 'string') {
+    author = pkg.author;
+  } else {
+    author = pkg.author.replace(/[^a-zA-Z0-9|@]/gi, ' ').replace(/name|email|/gi, '').replace(/\s+/gi, ' ').trim();
+  }
+  msg.push(' Author: '.green + author.red);
+  biggerItem = msg.reduce(function(a, b) {
     if (typeof a === 'string') {
       a = a.replace(/\u001b\[[0-9]+m/gi, '');
     }
@@ -109,11 +114,12 @@ exports.welcome = function() {
       b = b.replace(/\u001b\[[0-9]+m/gi, '');
     }
     if (a.length > b.length) {
-      return a.length;
+      return a;
     } else {
-      return b.length;
+      return b;
     }
   });
+  boxSize = biggerItem.length;
   for (i = _i = 0; 0 <= boxSize ? _i <= boxSize : _i >= boxSize; i = 0 <= boxSize ? ++_i : --_i) {
     boxStr += "#";
   }
