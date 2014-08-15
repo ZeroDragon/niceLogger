@@ -45,9 +45,16 @@ Now you can use all the features that nice logger has:
 
 ###Welcome message
 
-    logger.welcome();
+    logger.welcome({extra_info_optional:true});
 
 The welcome message will log a fancy colored info of your node application.
+You can provide an optional extraInfo object to log something more on the same welcome box.
+
+####Box message
+
+    logger.box({this_one_is_required:true})
+
+Similar to the welcome message, this box message will create a super fancy log inside a box with the parameters provided
 
 ###Five flavours of log
 
@@ -57,8 +64,10 @@ The welcome message will log a fancy colored info of your node application.
     logger.warning('This is a warning message');
     logger.error('This is an error message');
 
-Every log flavour outputs some information about the machine, date, time and type of log. The types of logs are colored on white for regular, blue for debug, green for info, yellow for warning and red for error.  
+Every log flavour outputs some information about the machine, date, time and type of log (all off this are configurable to display).  
+The log types are colored on white for regular, blue for debug, green for info, yellow for warning and red for error.  
 Also there is no limit of params to send to the logs, just like the ol' console.log
+Also is you provide an array or an object, the log will output it formated and colored
 
 ###Inline logs
 
@@ -107,7 +116,25 @@ or
 
 
 ##Changelog
-0.32.07a - Titleize now mimics the whole RoR functionality and allows changes to the prototype
-0.32.06g - Added a required path parameter to the config function  
-0.32.06f - Name changed and fixing typos on readme  
-0.32.06e - Release to github and npm repo
+**0.33.05a**  
+
+- [Feature] Welcome message now accepts an optional parameter to log extra info on the same box, also, the box is now closed  
+- [Feature] Added a new box type log that requires a parameter with info to display a super fancy log  
+- Logs now displays objects and arrays in a formatted way and sintax highlighted  
+- [Fix] Fixed a problem when outputing logs to a file. The countdown and progress functions only logs the last message to avoid problems with log files
+    
+**0.32.07a**
+
+- Titleize now mimics the whole RoR functionality and allows changes to the prototype
+
+**0.32.06g**  
+
+- Added a required path parameter to the config function  
+
+**0.32.06f**  
+
+- Name changed and fixing typos on readme  
+
+**0.32.06e**  
+
+- Release to github and npm repo

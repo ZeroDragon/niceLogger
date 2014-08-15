@@ -1,8 +1,11 @@
-#Nice Logger
+#Requirements
 require 'consolecolors'
+
 pkg = false
 os = require 'os'
 logger  = {}
+
+#Titleize property to use here and anywhere where this package is required
 Object.defineProperty String.prototype, 'titleize',
   configurable : true
   get : ()->
@@ -13,6 +16,7 @@ Object.defineProperty String.prototype, 'titleize',
       array.push word.charAt(0).toUpperCase()+word.toLowerCase().slice(1)
     return array.join ' '
 
+#We use this to create the prefix for every log event
 _px = (type)->
   now = new Date()
   months = logger.months or [
@@ -43,25 +47,59 @@ _px = (type)->
   prefix = prefix.join(' ')
   return prefix
 
+#Will try to parse every object sent to the logger to create nice strings
 _toString = (data)->
   retval = []
   for i in data
     switch typeof i
       when 'string' then retval.push i
-      else retval.push JSON.stringify i
+      else
+        string = JSON.stringify i, null, 2
+        string = string
+          .replace /([\[\]\{\}\(\)])/gi, "$1".red
+          .replace /([:,])/gi, "$1".yellow
+          .replace /([^"]true)/gi, "$1".blue
+          .replace /([^"]false)/gi, "$1".magenta
+          .replace /(".*?")/gi, "$1".green
+        retval.push string
   joiner = if logger.separatedInfo then "\n" else ' '
   return retval.join joiner
 
+#This creates a box arround your log
+_makeBox = (msg)->
+  boxStr = ''
+  for str,k in msg
+    msg[k] = '# '.blue + str
+  biggerItem = msg.reduce (a,b)->
+    a = a.replace(/\u001b\[[0-9]+m/gi,'')
+    b = b.replace(/\u001b\[[0-9]+m/gi,'')
+    return if a.length > b.length then a else b
+  boxSize = biggerItem.length
+
+  for str,k in msg
+    endBox = ''
+    offset = boxSize - str.replace(/\u001b\[[0-9]+m/gi,'').length
+    endBox+= ' ' for i in [0..offset]
+    msg[k] = str + endBox + '#'.blue
+  
+  boxStr+="#" for i in [0..boxSize+1]
+  msg.unshift boxStr.blue
+  msg.push boxStr.blue
+  return msg
+
+#The export to define some required parameters and caller info
 exports.config = (config,path)->
   logger[k] = v for k, v of config
-  pkg = require path+'/'+logger.appInfo
+  pkg = {}
+  try
+    pkg = require path+'/'+logger.appInfo
   return exports
 
-exports.welcome = ()->
-  boxStr = ''
+#Welcome will display a nice message, use this for your app :D
+exports.welcome = (extraInfo=false)->
   msg = []
-  msg.push ' Welcome to: '.green + pkg.name.titleize.magenta
-  msg.push ' Version: '.green + pkg.version.yellow
+  msg.push 'Welcome to: '.green + pkg.name.titleize.magenta
+  msg.push 'Version: '.green + pkg.version.yellow
   if typeof pkg.author is 'string'
     author = pkg.author
   else
@@ -70,16 +108,23 @@ exports.welcome = ()->
       .replace /name|email|/gi,''
       .replace /\s+/gi,' '
       .trim()
-  msg.push ' Author: '.green + author.red
-  biggerItem = msg.reduce (a,b)->
-    a = a.replace(/\u001b\[[0-9]+m/gi,'') if typeof a is 'string'
-    b = b.replace(/\u001b\[[0-9]+m/gi,'') if typeof b is 'string'
-    return if a.length > b.length then a else b
-  boxSize = biggerItem.length
-  boxStr+="#" for i in [0..boxSize]
-  msg.unshift boxStr.blue
-  msg.push boxStr.blue
-  msg.push ''
+  msg.push 'Author: '.green + author.red
+
+  if extraInfo
+    for k, v of extraInfo
+      msg.push (k.titleize+': ').green + v.red
+
+  msg = _makeBox msg
+  console.log msg.join "\n"
+
+#Box comment for those ultra fancy logs
+exports.box = (info,defColor=true)->
+  msg = []
+  for k, v of info
+    line = (k.titleize+' ').green + v.red
+    line = (k.titleize+' ') + v unless defColor
+    msg.push line
+  msg = _makeBox msg
   console.log msg.join "\n"
 
 exports.debug = (data...)->
@@ -93,20 +138,27 @@ exports.error = (data...)->
 exports.log = (data...)->
   console.log _px('log'), _toString data
 exports.progress = (data,done=false)->
-  process.stdout.clearLine()
-  process.stdout.cursorTo 0
-  process.stdout.write data.join ''
-  console.log '' if done
+  if process.stdout.clearLine
+    process.stdout.clearLine()
+    process.stdout.cursorTo 0
+    process.stdout.write data.join ''
+    console.log '' if done
+  else
+    console.log data.join '' if done
 exports.countdown = (message,length=5,interval=1000,callback=false)->
   clearTimeout timer
-  process.stdout.clearLine()
-  process.stdout.cursorTo 0
-  process.stdout.write message.replace '{timeout}', length
+  if process.stdout.clearLine
+    process.stdout.clearLine()
+    process.stdout.cursorTo 0
+    process.stdout.write message.replace '{timeout}', length
   length--
   if length >= 0
     timer = setTimeout ()->
       exports.countdown message,length,interval,callback
     ,interval
   else
-    console.log ''
+    if process.stdout.clearLine
+      console.log ''
+    else
+      console.log message.replace '{timeout}', length+1
     callback() if callback

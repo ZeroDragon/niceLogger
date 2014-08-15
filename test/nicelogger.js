@@ -3,7 +3,13 @@ config = require('./config.json');
 logger = require('../bin/nicelogger.js').config(config.logger,__dirname+'/..');
 
 //The logger functions
-logger.welcome();
+extraInfo = {
+  environment : 'development',
+  running_with : process.title +' '+ process.version
+};
+logger.welcome(extraInfo);
+
+logger.log(extraInfo,{something:{more:{deep:"true",superdeep:true}}});
 logger.log('This is a regular log message');
 logger.debug('This is a debug message');
 logger.info('This is an info message');
@@ -55,6 +61,10 @@ var progress = function(){
 
 //end
 var end = function(){
-  logger.info('The end of the example.'.red.inverse,'Happy codding'.yellow.inverse);
+  logger.box({
+    'demonstration finished':'',
+    'thanks_for_using_this_package':'happy face',
+    'any_comments_to_my_email:':'npm@zerothedragon.com'
+  });
   process.exit();
 };
