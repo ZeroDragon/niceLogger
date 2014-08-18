@@ -1,4 +1,4 @@
-var logger, os, pkg, _makeBox, _px, _toString,
+var logger, os, pkg, _makeBox, _px, _setLogLevel, _toString,
   __slice = [].slice;
 
 require('consolecolors');
@@ -87,11 +87,11 @@ _toString = function(data) {
 };
 
 _makeBox = function(msg) {
-  var biggerItem, boxSize, boxStr, endBox, i, k, offset, str, _i, _j, _k, _l, _len, _len1, _ref;
+  var biggerItem, boxSize, boxStr, btmStr, endBox, i, k, offset, str, _i, _j, _k, _l, _len, _len1, _ref;
   boxStr = '';
   for (k = _i = 0, _len = msg.length; _i < _len; k = ++_i) {
     str = msg[k];
-    msg[k] = '# '.blue + str;
+    msg[k] = '║ '.blue + str;
   }
   biggerItem = msg.reduce(function(a, b) {
     a = a.replace(/\u001b\[[0-9]+m/gi, '');
@@ -110,14 +110,27 @@ _makeBox = function(msg) {
     for (i = _k = 0; 0 <= offset ? _k <= offset : _k >= offset; i = 0 <= offset ? ++_k : --_k) {
       endBox += ' ';
     }
-    msg[k] = str + endBox + '#'.blue;
+    msg[k] = str + endBox + '║'.blue;
   }
   for (i = _l = 0, _ref = boxSize + 1; 0 <= _ref ? _l <= _ref : _l >= _ref; i = 0 <= _ref ? ++_l : --_l) {
-    boxStr += "#";
+    boxStr += "═";
   }
+  boxStr = boxStr.replace('═', '╔').replace(/═$/, '╗');
+  btmStr = boxStr.replace('╔', '╚').replace('╗', '╝');
   msg.unshift(boxStr.blue);
-  msg.push(boxStr.blue);
+  msg.push(btmStr.blue);
   return msg;
+};
+
+_setLogLevel = function() {
+  var def, logLvl, lower;
+  def = ['debug', 'info', 'warning', 'error', 'log', 'countdown', 'progress', 'box', 'welcome'];
+  logLvl = logger.logLevel || def;
+  if (typeof logLvl === 'string') {
+    lower = ~def.indexOf(logLvl) ? def.indexOf(logLvl) : 0;
+    logLvl = def.slice(lower);
+  }
+  logger.logLevel = logLvl;
 };
 
 exports.config = function(config, path) {
@@ -130,7 +143,21 @@ exports.config = function(config, path) {
   try {
     pkg = require(path + '/' + logger.appInfo);
   } catch (_error) {}
+  _setLogLevel();
   return exports;
+};
+
+exports.set = function() {
+  var itm, itms, k, v, _i, _len;
+  itms = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
+  for (_i = 0, _len = itms.length; _i < _len; _i++) {
+    itm = itms[_i];
+    for (k in itm) {
+      v = itm[k];
+      logger[k] = v;
+    }
+  }
+  return _setLogLevel();
 };
 
 exports.welcome = function(extraInfo) {
@@ -162,63 +189,77 @@ exports.box = function(info, defColor) {
   if (defColor == null) {
     defColor = true;
   }
-  msg = [];
-  for (k in info) {
-    v = info[k];
-    line = (k.titleize + ' ').green + v.red;
-    if (!defColor) {
-      line = (k.titleize + ' ') + v;
+  if (~~logger.logLevel.indexOf('box')) {
+    msg = [];
+    for (k in info) {
+      v = info[k];
+      line = (k.titleize + ' ').green + v.red;
+      if (!defColor) {
+        line = (k.titleize + ' ') + v;
+      }
+      msg.push(line);
     }
-    msg.push(line);
+    msg = _makeBox(msg);
+    return console.log(msg.join("\n"));
   }
-  msg = _makeBox(msg);
-  return console.log(msg.join("\n"));
 };
 
 exports.debug = function() {
   var data;
   data = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
-  return console.log(_px('debug'), _toString(data));
+  if (~logger.logLevel.indexOf('debug')) {
+    return console.log(_px('debug'), _toString(data));
+  }
 };
 
 exports.info = function() {
   var data;
   data = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
-  return console.log(_px('info'), _toString(data));
+  if (~logger.logLevel.indexOf('info')) {
+    return console.log(_px('info'), _toString(data));
+  }
 };
 
 exports.warning = function() {
   var data;
   data = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
-  return console.log(_px('warning'), _toString(data));
+  if (~logger.logLevel.indexOf('warning')) {
+    return console.log(_px('warning'), _toString(data));
+  }
 };
 
 exports.error = function() {
   var data;
   data = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
-  return console.log(_px('error'), _toString(data));
+  if (~logger.logLevel.indexOf('error')) {
+    return console.log(_px('error'), _toString(data));
+  }
 };
 
 exports.log = function() {
   var data;
   data = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
-  return console.log(_px('log'), _toString(data));
+  if (~logger.logLevel.indexOf('log')) {
+    return console.log(_px('log'), _toString(data));
+  }
 };
 
 exports.progress = function(data, done) {
   if (done == null) {
     done = false;
   }
-  if (process.stdout.clearLine) {
-    process.stdout.clearLine();
-    process.stdout.cursorTo(0);
-    process.stdout.write(data.join(''));
-    if (done) {
-      return console.log('');
-    }
-  } else {
-    if (done) {
-      return console.log(data.join(''));
+  if (~logger.logLevel.indexOf('progress')) {
+    if (process.stdout.clearLine) {
+      process.stdout.clearLine();
+      process.stdout.cursorTo(0);
+      process.stdout.write(data.join(''));
+      if (done) {
+        return console.log('');
+      }
+    } else {
+      if (done) {
+        return console.log(data.join(''));
+      }
     }
   }
 };
@@ -234,25 +275,27 @@ exports.countdown = function(message, length, interval, callback) {
   if (callback == null) {
     callback = false;
   }
-  clearTimeout(timer);
-  if (process.stdout.clearLine) {
-    process.stdout.clearLine();
-    process.stdout.cursorTo(0);
-    process.stdout.write(message.replace('{timeout}', length));
-  }
-  length--;
-  if (length >= 0) {
-    return timer = setTimeout(function() {
-      return exports.countdown(message, length, interval, callback);
-    }, interval);
-  } else {
+  if (~logger.logLevel.indexOf('countdown')) {
+    clearTimeout(timer);
     if (process.stdout.clearLine) {
-      console.log('');
-    } else {
-      console.log(message.replace('{timeout}', length + 1));
+      process.stdout.clearLine();
+      process.stdout.cursorTo(0);
+      process.stdout.write(message.replace('{timeout}', length));
     }
-    if (callback) {
-      return callback();
+    length--;
+    if (length >= 0) {
+      return timer = setTimeout(function() {
+        return exports.countdown(message, length, interval, callback);
+      }, interval);
+    } else {
+      if (process.stdout.clearLine) {
+        console.log('');
+      } else {
+        console.log(message.replace('{timeout}', length + 1));
+      }
+      if (callback) {
+        return callback();
+      }
     }
   }
 };

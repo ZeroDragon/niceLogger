@@ -9,12 +9,11 @@ extraInfo = {
 };
 logger.welcome(extraInfo);
 
-logger.log(extraInfo,{something:{more:{deep:"true",superdeep:true}}});
-logger.log('This is a regular log message');
 logger.debug('This is a debug message');
 logger.info('This is an info message');
 logger.warning('This is a warning message');
 logger.error('This is an error message');
+logger.log('This is a regular log message');
 
 //Consecutive logs in the same line
 logger.countdown(

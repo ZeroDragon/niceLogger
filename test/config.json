@@ -3,9 +3,10 @@
     "appInfo" : "package.json",
     "date" : true,
     "time" : true,
-    "machineName" : false,
+    "machineName" : true,
     "separatedTimestamp" : false,
     "separatedInfo" : false,
+    "logLevel" : "all",
     "months" : [
       "Ene","Feb","Mar","Abr","May","Jun",
       "Jul","Ago","Sep","Oct","Nov","Dic"

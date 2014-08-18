@@ -69,7 +69,7 @@ _toString = (data)->
 _makeBox = (msg)->
   boxStr = ''
   for str,k in msg
-    msg[k] = '# '.blue + str
+    msg[k] = '║ '.blue + str
   biggerItem = msg.reduce (a,b)->
     a = a.replace(/\u001b\[[0-9]+m/gi,'')
     b = b.replace(/\u001b\[[0-9]+m/gi,'')
@@ -80,12 +80,27 @@ _makeBox = (msg)->
     endBox = ''
     offset = boxSize - str.replace(/\u001b\[[0-9]+m/gi,'').length
     endBox+= ' ' for i in [0..offset]
-    msg[k] = str + endBox + '#'.blue
+    msg[k] = str + endBox + '║'.blue
   
-  boxStr+="#" for i in [0..boxSize+1]
+  boxStr+="═" for i in [0..boxSize+1]
+  boxStr = boxStr.replace('═','╔').replace(/═$/,'╗')
+  btmStr = boxStr.replace('╔','╚').replace('╗','╝')
   msg.unshift boxStr.blue
-  msg.push boxStr.blue
+  msg.push btmStr.blue
   return msg
+
+_setLogLevel = ->
+  def = [
+    'debug', 'info', 'warning',
+    'error', 'log', 'countdown',
+    'progress', 'box', 'welcome'
+  ]
+  logLvl = logger.logLevel or def
+  if typeof logLvl is 'string'
+    lower = if ~def.indexOf(logLvl) then def.indexOf(logLvl) else 0
+    logLvl = def.slice(lower)
+  logger.logLevel = logLvl
+  return
 
 #The export to define some required parameters and caller info
 exports.config = (config,path)->
@@ -93,7 +108,14 @@ exports.config = (config,path)->
   pkg = {}
   try
     pkg = require path+'/'+logger.appInfo
+  _setLogLevel()
   return exports
+
+#Change/add config elements on the fly
+exports.set = (itms...)->
+  for itm in itms
+    logger[k] = v for k, v of itm
+  _setLogLevel()
 
 #Welcome will display a nice message, use this for your app :D
 exports.welcome = (extraInfo=false)->
@@ -119,46 +141,58 @@ exports.welcome = (extraInfo=false)->
 
 #Box comment for those ultra fancy logs
 exports.box = (info,defColor=true)->
-  msg = []
-  for k, v of info
-    line = (k.titleize+' ').green + v.red
-    line = (k.titleize+' ') + v unless defColor
-    msg.push line
-  msg = _makeBox msg
-  console.log msg.join "\n"
+  if ~~logger.logLevel.indexOf('box')
+    msg = []
+    for k, v of info
+      line = (k.titleize+' ').green + v.red
+      line = (k.titleize+' ') + v unless defColor
+      msg.push line
+    msg = _makeBox msg
+    console.log msg.join "\n"
 
 exports.debug = (data...)->
-  console.log _px('debug'), _toString data
+  if ~logger.logLevel.indexOf('debug')
+    console.log _px('debug'), _toString data
 exports.info = (data...)->
-  console.log _px('info'), _toString data
+  if ~logger.logLevel.indexOf('info')
+    console.log _px('info'), _toString data
 exports.warning = (data...)->
-  console.log _px('warning'), _toString data
+  if ~logger.logLevel.indexOf('warning')
+    console.log _px('warning'), _toString data
 exports.error = (data...)->
-  console.log _px('error'), _toString data
+  if ~logger.logLevel.indexOf('error')
+    console.log _px('error'), _toString data
 exports.log = (data...)->
-  console.log _px('log'), _toString data
+  if ~logger.logLevel.indexOf('log')
+    console.log _px('log'), _toString data
+
+#Progress returns logs in line
 exports.progress = (data,done=false)->
-  if process.stdout.clearLine
-    process.stdout.clearLine()
-    process.stdout.cursorTo 0
-    process.stdout.write data.join ''
-    console.log '' if done
-  else
-    console.log data.join '' if done
-exports.countdown = (message,length=5,interval=1000,callback=false)->
-  clearTimeout timer
-  if process.stdout.clearLine
-    process.stdout.clearLine()
-    process.stdout.cursorTo 0
-    process.stdout.write message.replace '{timeout}', length
-  length--
-  if length >= 0
-    timer = setTimeout ()->
-      exports.countdown message,length,interval,callback
-    ,interval
-  else
+  if ~logger.logLevel.indexOf('progress')
     if process.stdout.clearLine
-      console.log ''
+      process.stdout.clearLine()
+      process.stdout.cursorTo 0
+      process.stdout.write data.join ''
+      console.log '' if done
     else
-      console.log message.replace '{timeout}', length+1
-    callback() if callback
+      console.log data.join '' if done
+
+#Countdown keeps logging untill timeout and then callsback
+exports.countdown = (message,length=5,interval=1000,callback=false)->
+  if ~logger.logLevel.indexOf('countdown')
+    clearTimeout timer
+    if process.stdout.clearLine
+      process.stdout.clearLine()
+      process.stdout.cursorTo 0
+      process.stdout.write message.replace '{timeout}', length
+    length--
+    if length >= 0
+      timer = setTimeout ()->
+        exports.countdown message,length,interval,callback
+      ,interval
+    else
+      if process.stdout.clearLine
+        console.log ''
+      else
+        console.log message.replace '{timeout}', length+1
+      callback() if callback
