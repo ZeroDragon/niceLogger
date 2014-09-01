@@ -1,7 +1,9 @@
-var logger, os, pkg, _makeBox, _px, _setLogLevel, _toString,
+var logger, os, pkg, util, _makeBox, _px, _setLogLevel, _toString,
   __slice = [].slice;
 
 require('consolecolors');
+
+util = require('util');
 
 pkg = false;
 
@@ -77,8 +79,13 @@ _toString = function(data) {
         retval.push(i);
         break;
       default:
-        string = JSON.stringify(i, null, 2);
-        string = string.replace(/([\[\]\{\}\(\)])/gi, "$1".red).replace(/([:,])/gi, "$1".yellow).replace(/([^"]true)/gi, "$1".blue).replace(/([^"]false)/gi, "$1".magenta).replace(/(".*?")/gi, "$1".green);
+        string = util.inspect(i, {
+          showHidden: true,
+          depth: null
+        }).replace('[Circular]', '"[NiceLogger-Circular]"');
+        eval('string = ' + string);
+        string = JSON.stringify(string, null, 2);
+        string = string.replace('"[NiceLogger-Circular]"', 'NiceLogger-Circular').replace(/([\[\]\{\}\(\)])/gi, "$1".red).replace(/([:,])/gi, "$1".yellow).replace(/([^"]true)/gi, "$1".blue).replace(/([^"]false)/gi, "$1".magenta).replace(/(".*?")/gi, "$1".green).replace('NiceLogger-Circular', '[Circular]'.magenta);
         retval.push(string);
     }
   }

@@ -149,32 +149,36 @@ There is a test file that uses some of the functions in different ways so you ca
 
 
 ##Changelog
+**0.35.07a**  
+
+- [Bugfix] Fixed a problem with circular structures.
+
 **0.33.07a**  
 
-- [Feature] Added logger.config to change configurations on run time
-- [Feature] Changed box/welcome display
-- [Feature] Now you can define the log level by a string or an array of allowed log types
-- [TODO] Add papertrail support
+- [Feature] Added logger.config to change configurations on run time.  
+- [Feature] Changed box/welcome display.  
+- [Feature] Now you can define the log level by a string or an array of allowed log types.  
+- [TODO] Add papertrail support.  
 
 **0.33.05a**  
 
-- [Feature] Welcome message now accepts an optional parameter to log extra info on the same box, also, the box is now closed  
-- [Feature] Added a new box type log that requires a parameter with info to display a super fancy log  
-- [Feature] Logs now displays objects and arrays in a formatted way and sintax highlighted  
-- [Fix] Fixed a problem when outputing logs to a file. The countdown and progress functions only logs the last message to avoid problems with log files
+- [Feature] Welcome message now accepts an optional parameter to log extra info on the same box, also, the box is now closed.  
+- [Feature] Added a new box type log that requires a parameter with info to display a super fancy log.  
+- [Feature] Logs now displays objects and arrays in a formatted way and sintax highlighted.  
+- [Fix] Fixed a problem when outputing logs to a file. The countdown and progress functions only logs the last message to avoid problems with log files.  
     
-**0.32.07a**
+**0.32.07a**  
 
-- Titleize now mimics the whole RoR functionality and allows changes to the prototype
+- Titleize now mimics the whole RoR functionality and allows changes to the prototype.  
 
 **0.32.06g**  
 
-- Added a required path parameter to the config function  
+- Added a required path parameter to the config function.  
 
 **0.32.06f**  
 
-- Name changed and fixing typos on readme  
+- Name changed and fixing typos on readme.  
 
 **0.32.06e**  
 
-- Release to github and npm repo
+- Release to github and npm repo.  

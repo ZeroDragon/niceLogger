@@ -1,5 +1,6 @@
 #Requirements
 require 'consolecolors'
+util = require 'util'
 
 pkg = false
 os = require 'os'
@@ -54,13 +55,18 @@ _toString = (data)->
     switch typeof i
       when 'string' then retval.push i
       else
-        string = JSON.stringify i, null, 2
+        string = util.inspect(i, { showHidden: true, depth: null })
+          .replace '[Circular]', '"[NiceLogger-Circular]"'
+        eval 'string = '+string
+        string = JSON.stringify string, null, 2
         string = string
+          .replace '"[NiceLogger-Circular]"', 'NiceLogger-Circular'
           .replace /([\[\]\{\}\(\)])/gi, "$1".red
           .replace /([:,])/gi, "$1".yellow
           .replace /([^"]true)/gi, "$1".blue
           .replace /([^"]false)/gi, "$1".magenta
           .replace /(".*?")/gi, "$1".green
+          .replace 'NiceLogger-Circular', '[Circular]'.magenta
         retval.push string
   joiner = if logger.separatedInfo then "\n" else ' '
   return retval.join joiner
