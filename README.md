@@ -4,7 +4,7 @@ The nicelogger module will add some fancy options to the regular console.log in 
 Inspired by the [winston logger](https://github.com/flatiron/winston), this is a very much
 reduced version made from scratch.
 
-##Instalation
+## Instalation
 
     npm install nicelogger
 
@@ -26,7 +26,7 @@ A config file is required to load information on nicelogger. Here is an example:
       }
     }
 
-##Options
+## Options
 Nicelogger will load the app name and version from the `package.json`.
 
 `date : [bool]`  
@@ -52,28 +52,30 @@ Also you can provide an array of log types, this types will be the only ones tha
 `months : [array]`  
 A set of month names to display. Default: English
 
-##Usage
+## Usage
 First require nice logger and don't forget the config file
 
     config = require('./config.json');
-    logger = require('nicelogger').config(config.logger);
+    logger = require('nicelogger').config(config.logger, __dirname);
+
+The second parameter is the path to your app config file (needed to get app name, author, version and few stuff to display on the log, this path works alongside the `appInfo` property on the `config.json`
 
 Now you can use all the features that nice logger has:
 
-###Welcome message
+### Welcome message
 
     logger.welcome({extra_info_optional:true});
 
 The welcome message will log a fancy colored info of your node application.
 You can provide an optional extraInfo object to log something more on the same welcome box.
 
-###Box message
+### Box message
 
     logger.box({this_one_is_required:true})
 
 Similar to the welcome message, this box message will create a super fancy log inside a box with the parameters provided
 
-###Five flavours of log
+### Five flavours of log
 
     logger.debug('This is a debug message');
     logger.info('This is an info message');
@@ -86,7 +88,7 @@ The log types are colored on white for regular, blue for debug, green for info, 
 There is no limit of params to send to the logs, just like the ol' console.log
 Also is you provide an array or an object, the log will output it formated and colored
 
-###Inline logs
+### Inline logs
 
     //Countdown Function
     logger.countdown(
@@ -124,7 +126,7 @@ This items will be the output of the log. The reason that this are an array and 
 `done : [bool]` (**optional**)  
 Set this one to true to insert a line break after the log and end the in-line logging.
 
-###Change configurations on run time
+### Change configurations on run time
 Use `logger.set` to modify configurations. You can change the logLevel, machineName, etc.
 
     logger.set({logLevel:'error')
@@ -135,21 +137,24 @@ Use `logger.set` to modify configurations. You can change the logLevel, machineN
     logger.info('This is an info message')
     //17 Ago 22:13:26 ZeroMac.local [info] This is an info message
 
-##ConsoleColors and extra stuff
+## ConsoleColors and extra stuff
 All collors are displayed using the consolecolors package. And since it mutates the string prototype, you can use all of those colors and styles on your regular logs, or even mix them into the loggers. For more info take a look at [ConsoleColors](https://github.com/ZeroDragon/consolecolors).  
 Also built in the logger is a titleize function that will set to uppercase every first letter of a string. Use it like this:
 
     "this is a string".titleize
     //This Is A String
 
-##Test
+## Test
 There is a test file that uses some of the functions in different ways so you can see how those works together. To fire the test just do:
 
     npm test
 
 
-##Changelog
-**0.35.07a**  
+## Changelog
+**0.17.04.04**  
+- [Feature] Fixed some markdown issues on the readme and added better documentation for the config section thanks to [Maggie Jones Savovska](https://github.com/maggiesavovska) for pointing it out.  
+
+**0.35.07a**  
 
 - [Bugfix] Fixed a problem with circular structures.
 
