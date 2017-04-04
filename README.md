@@ -151,7 +151,10 @@ There is a test file that uses some of the functions in different ways so you ca
 
 
 ## Changelog
-**0.17.04.04**  
+**17.04.04b**  
+- [Feature] Since the versions are not a concern, I'm using now `YY.MM.DD[rev]` format 
+
+**17.04.04**  
 - [Feature] Fixed some markdown issues on the readme and added better documentation for the config section thanks to [Maggie Jones Savovska](https://github.com/maggiesavovska) for pointing it out.  
 
 **0.35.07a**  
